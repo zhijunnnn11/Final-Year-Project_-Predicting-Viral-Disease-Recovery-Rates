@@ -1,0 +1,133 @@
+/* General body styling */
+body {
+    font-family: 'Cambria', sans-serif;
+}
+
+/* Logo Styling */
+.header-logo {
+    width: 50px;
+    height: auto;
+    margin-right: 15px; /* Add margin to the right */
+}
+
+/* Hero Section Styling */
+.hero-section {
+    background: url('{{ url_for("static", filename="images/Homepage.png") }}') no-repeat center center;
+    background-size: cover;
+    color: rgb(255, 255, 255);
+    padding: 170px 0;
+    height: 100vh;
+}
+
+.hero-title {
+    font-size: 5rem;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(72, 73, 76, 0.7);
+}
+
+.hero-subtitle {
+    font-size: 1.8rem;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(72, 73, 76, 0.7);
+}
+
+/* Navbar Styling */
+.navbar {
+    padding: 15px 0;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #5d98d6;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #5d98d6;
+    font-weight: bold;
+}
+
+/* Custom Active Link Styling */
+.navbar-nav .nav-item .nav-link.active {
+    color: black;  /* Change the active link color to black */
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #0056b3;
+}
+
+/* Welcome Section - Change Background Color Here */
+.container-welcome {
+    background-color: #a0d6eb; /* Change this to your preferred color */
+    padding: 80px 0;
+    margin-top: 50px;
+    text-align: center;
+}        
+
+/* Container Styling */
+.container {
+    margin-top: 50px;
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* Form Container Styling */
+.form-container {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-section h4 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Result Box Styling */
+.result-box {
+    background-color: #e9f7fe;
+    border-left: 5px solid #007bff;
+    padding: 20px;
+    margin-top: 25px;
+    border-radius: 5px;
+}
+
+.btn-submit {
+    min-width: 150px;
+    padding: 0.5rem 1.5rem;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+ }
+

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Performance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cambria', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: auto;
+            margin-right: 15px;
+        }
+
+        .navbar {
+            padding: 15px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #5d98d6;
+        }
+
+        .navbar-nav .nav-item .nav-link.active {
+            color: black; /* Make the active link text black */
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #5d98d6;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #0056b3;
+        }
+
+        .navbar-nav.ml-auto {
+            margin-left: auto;
+        }
+
+        .performance-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .performance-metrics {
+            background-color: #f8fcff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #5f8ccf;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            color: #5f8ccf;
+            font-weight: bold;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #5f8ccf;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .image-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .image-caption {
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <!-- Logo with proper styling now -->
+            <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Logo" class="header-logo">
+            <a class="navbar-brand" href="/">FYP Project</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}" href="/">Home</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'predict' else '' }}" href="/predict">Predict</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link {{ 'active' if request.endpoint == 'metrics' else '' }}" href="/metrics" >Metrics</a>
+                             </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'model-performance' else '' }}" href="/model-performance"style="color: black;">Model Performance</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('profile') }}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-danger" href="{{ url_for('logout') }}" role="button">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-primary" href="{{ url_for('login') }}" role="button">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h1 class="text-center mb-5" style="color: #5f8ccf;">Model Performance Analysis</h1>
+        
+        <!-- XGBoost Introduction Section (Adjusted) -->
+        <div class="performance-section" style="padding: 20px; margin-bottom: 20px;">  <!-- Reduced padding/margin -->
+            <h2 class="section-title">XGBoost Machine Learning Model</h2>
+            <div class="row align-items-center">  <!-- Added vertical alignment -->
+                <div class="col-md-6">
+                    <p>The recovery rate prediction model uses an XGBoost model. XGBoost is a powerful machine learning algorithm that applies gradient boosting to enhance prediction accuracy by combining multiple weak models into a single strong model.</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="image-container" style="padding: 10px;">  <!-- Reduced padding -->
+                        <img src="{{ url_for('static', filename='images/XGBoost.jpg') }}" 
+                            alt="XGBoost Illustration" 
+                            class="img-fluid" 
+                            style="max-width: 80%; height: auto; display: block; margin: 0 auto;">  <!-- Smaller image -->
+                        <p class="image-caption">XGBoost</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics Section -->
+        <div class="performance-section">
+            <h2 class="section-title">Model Performance Metrics</h2>
+            <div class="performance-metrics">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">96.40%</div>
+                            <div class="metric-label">Model Accuracy (R²)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">96.40%</div>
+                            <div class="metric-label">Adjusted R²</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">0.03724</div>
+                            <div class="metric-label">RMSE</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">0.00138</div>
+                            <div class="metric-label">MSE</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">0.02896</div>
+                            <div class="metric-label">MAE</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">4.74243</div>
+                            <div class="metric-label">SMAPE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Section -->
+        <div class="performance-section">
+            <h2 class="section-title">Model Visualizations</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="image-container">
+                        <img src="{{ url_for('static', filename='images/LearningCurve.png') }}" alt="Learning Curve" class="img-fluid">
+                        <p class="image-caption">Learning Curve - Model Training Progress</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="image-container">
+                        <img src="{{ url_for('static', filename='images/SHAP.png') }}" alt="Feature Importance" class="img-fluid">
+                        <p class="image-caption">Feature Importance Scores</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interpretation Section -->
+        <div class="performance-section">
+            <h2 class="section-title">Performance Interpretation</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>This XGBoost model demonstrates exceptional performance with an R² score of 96.40%, indicating it explains nearly all the variability in the target variable. The consistently high scores across all metrics suggest the model is both accurate and reliable for predicting health outcomes.</p>
+                    <p>Key observations:</p>
+                    <ul>
+                        <li>The learning curve shows excellent convergence with minimal overfitting</li>
+                        <li>Feature importance reveals which factors most influence recovery predictions</li>
+                        <li>Low error metrics (RMSE, MAE) indicate precise predictions</li>
+                        <li>The SMAPE of 4.74% suggests high forecasting accuracy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; TP069330 - FYP Project - APU3F2411CSDA. All Rights Reserved.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

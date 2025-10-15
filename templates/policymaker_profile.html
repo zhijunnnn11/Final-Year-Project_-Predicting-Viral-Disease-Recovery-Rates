@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Maker Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cambria', sans-serif;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: auto;
+            margin-right: 15px;
+        }
+
+        .navbar {
+            padding: 15px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #5d98d6;
+        }
+
+        .navbar-nav .nav-item .nav-link.active {
+            color: black; /* Make the active link text black */
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #5d98d6;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #0056b3;
+        }
+
+        .navbar-nav.ml-auto {
+            margin-left: auto;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .footer {
+            background-color: #f8f9fa1e;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #5f8ccf;
+            color: white;
+            font-size: 1.5rem;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .card-body p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .card-body h5 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .divider {
+            border-bottom: 2px solid #ddd;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .table-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <!-- Logo with proper styling now -->
+            <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Logo" class="header-logo">
+            <a class="navbar-brand" href="/">FYP Project</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}" href="/">Home</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'predict' else '' }}" href="/predict">Predict</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link {{ 'active' if request.endpoint == 'metrics' else '' }}" href="/metrics" >Metrics</a>
+                             </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'model-performance' else '' }}" href="/model-performance">Model Performance</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('profile') }}"style="color: black;">Profile</a>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="btn btn-danger" href="{{ url_for('logout') }}" role="button">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-primary" href="{{ url_for('login') }}" role="button">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Policy Maker Profile Section -->
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>Policy Maker Profile</h3>
+            </div>
+            <div class="card-body">
+                <h5>Username: {{ username }} (Policy Maker)</h5>
+                <p><strong>Password:</strong> **********</p>
+                <p><strong>Location:</strong> Capital City, Country</p>
+                <p><strong>Contact:</strong> +9876543210</p>
+                <p><strong>Email:</strong> policymaker@example.com</p>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Policy Maker Information Section -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Policy Maker Information</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Policy Focus:</strong> Healthcare Policy, Public Health, Recovery Rates</p>
+                <p><strong>Current Focus Areas:</strong> Improving Recovery Rates, Expanding Healthcare Access, Disease Prevention</p>
+                <p><strong>Key Initiatives:</strong> National Health Programs, Public Health Awareness Campaigns</p>
+                <p><strong>Main Responsible Region:</strong> Region 1</p>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Hospital Information Section -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Hospital Information</h3>
+            </div>
+            <div class="card-body">
+                <p class="table-title">Region 1</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hospital</th>
+                            <th>Average Recovery Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hospital1</td>
+                            <td>71.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Hospital2</td>
+                            <td>67.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Hospital3</td>
+                            <td>73.1%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="table-title mt-4">Region 2</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hospital</th>
+                            <th>Average Recovery Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hospital4</td>
+                            <td>90%</td>
+                        </tr>
+                        <tr>
+                            <td>Hospital5</td>
+                            <td>60%</td>
+                        </tr>
+                        <tr>
+                            <td>Hospital6</td>
+                            <td>80%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 FYP Project - All Rights Reserved</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

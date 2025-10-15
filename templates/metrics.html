@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Metrics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cambria', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .metrics-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .metrics-header {
+            background-color: #5f8ccf;
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.2rem;
+        }
+        
+        .metrics-body {
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .metric-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .metric-item h5 {
+            color: #5f8ccf;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .metric-item small {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .last-updated {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .btn-primary {
+            background-color: #5f8ccf;
+            border: none;
+            padding: 8px 20px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5f8ccf;
+        }
+        
+        h2 {
+            color: #5f8ccf;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .header-logo {
+            width: 50px;
+            height: auto;
+            margin-right: 15px;
+        }
+
+        .navbar {
+            padding: 15px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #5d98d6;
+        }
+
+        .navbar-nav .nav-item .nav-link.active {
+            color: black;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #5d98d6;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #0056b3;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <!-- Logo with proper styling now -->
+            <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Logo" class="header-logo">
+            <a class="navbar-brand" href="/">FYP Project</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}" href="/">Home</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'predict' else '' }}" href="/predict">Predict</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link {{ 'active' if request.endpoint == 'metrics' else '' }}" href="/metrics" style="color: black;">Metrics</a>
+                             </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'model-performance' else '' }}" href="/model-performance">Model Performance</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('profile') }}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-danger" href="{{ url_for('logout') }}" role="button">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-primary" href="{{ url_for('login') }}" role="button">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Healthcare Metrics Dashboard</h2>
+                
+                <div class="metrics-card">
+                    <div class="metrics-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Current Regional Metrics - {{ user_region|title }}</h4>
+                        <span class="last-updated">Last updated: {{ current_metrics.last_updated }}</span>
+                    </div>
+                    <div class="metrics-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Disease-specific mortality rates -->
+                                <div class="metric-item">
+                                    <h5>Mortality Rate - COVID-19</h5>
+                                    <p class="metric-value">{{ current_metrics.Mort_Rate_COVID }}%</p>
+                                    <small>Percentage of COVID-19 cases that result in death</small>
+                                </div>
+                                
+                                <div class="metric-item">
+                                    <h5>Mortality Rate - HIV</h5>
+                                    <p class="metric-value">{{ current_metrics.Mort_Rate_HIV }}%</p>
+                                    <small>Percentage of HIV cases that result in death</small>
+                                </div>
+                                
+                                <div class="metric-item">
+                                    <h5>Mortality Rate - Influenza</h5>
+                                    <p class="metric-value">{{ current_metrics.Mort_Rate_Flu }}%</p>
+                                    <small>Percentage of Influenza cases that result in death</small>
+                                </div>
+                                
+                                <div class="metric-item">
+                                    <h5>Mortality Rate - Zika</h5>
+                                    <p class="metric-value">{{ current_metrics.Mort_Rate_Zika }}%</p>
+                                    <small>Percentage of Zika cases that result in death</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="metric-item">
+                                    <h5>Prevalence Rate</h5>
+                                    <p class="metric-value">{{ current_metrics.Prev_Rate }}%</p>
+                                    <small>Percentage of population affected by disease</small>
+                                </div>
+                                
+                                <div class="metric-item">
+                                    <h5>Urbanization Rate</h5>
+                                    <p class="metric-value">{{ current_metrics.Urban_Rate }}%</p>
+                                    <small>Percentage of population living in urban areas</small>
+                                </div>
+                                
+                                <div class="metric-item">
+                                    <h5>Health Access</h5>
+                                    <p class="metric-value">{{ current_metrics.Health_Access }}%</p>
+                                    <small>Percentage of population with access to healthcare</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if is_policymaker %}
+                <div class="metrics-card mt-4">
+                    <div class="metrics-header">
+                        <h4>Update Regional Metrics</h4>
+                    </div>
+                    <div class="metrics-body">
+                        <form method="POST" class="needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        {{ form.Mort_Rate_COVID.label(class="form-label") }}
+                                        {{ form.Mort_Rate_COVID(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid COVID-19 mortality rate (0-100%)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form.Mort_Rate_HIV.label(class="form-label") }}
+                                        {{ form.Mort_Rate_HIV(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid HIV mortality rate (0-100%)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form.Mort_Rate_Flu.label(class="form-label") }}
+                                        {{ form.Mort_Rate_Flu(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid Influenza mortality rate (0-100%)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form.Mort_Rate_Zika.label(class="form-label") }}
+                                        {{ form.Mort_Rate_Zika(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid Zika mortality rate (0-100%)</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        {{ form.Prev_Rate.label(class="form-label") }}
+                                        {{ form.Prev_Rate(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid prevalence rate (0-100%)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form.Urban_Rate.label(class="form-label") }}
+                                        {{ form.Urban_Rate(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid urbanization rate (0-100%)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form.Health_Access.label(class="form-label") }}
+                                        {{ form.Health_Access(class="form-control", required=True) }}
+                                        <div class="invalid-feedback">Please enter a valid health access percentage (0-100%)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <button type="submit" class="btn btn-primary btn-lg">Update Metrics</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="footer bg-light py-3 mt-4">
+        <div class="container">
+            <p class="text-center mb-0">&copy; 2025 FYP Project - All Rights Reserved</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.needs-validation');
+            
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            }
+        });
+    </script>
+</body>
+</html>
